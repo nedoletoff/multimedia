@@ -207,6 +207,8 @@ def bmp_img_read_save_hist(dir):
         list_x = [x for x in range(-130, 131, 10)]
         f, ax = plt.subplots(3, 1)
         f.set_label("Autocorrelation")
+        # TODO: autocorrelation func for red, green, blue channels and plot with 3 subplots (x, y)
+        '''
         for i in range(3):
             mas = [reds, greens, blues]
             for y in list_y:
@@ -219,6 +221,7 @@ def bmp_img_read_save_hist(dir):
             ax[i].set_xlabel('x')
             ax[i].set_ylabel('r')
             ax[i].legend()
+        '''
 
         ax[0].set_title('Red')
         ax[1].set_title('Green')
