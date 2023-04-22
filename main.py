@@ -84,7 +84,6 @@ def get_r(i_a: list, b_a: list, w, h):
     m_b = math_corr(b_a, w, h)
 
 
-
 def bmp_img_read_save_hist(dir):
     # List 1,4,8,16,24 позиции
     imgs = os.listdir(dir)
@@ -201,32 +200,30 @@ def bmp_img_read_save_hist(dir):
         data = {'red': red_colors, 'green': green_colors, 'blue': blue_colors}
         data = pd.DataFrame(data)
         corr = data.corr()
-        print(f'Корреляция между цветами в файле {img_path} равна\n {corr}')
+        print(f'Корреляция между цветами в файле {img_path} RGB равна\n {corr}')
 
         list_y = [-10, -5, 0, 5, 10]
         list_x = [x for x in range(-130, 131, 10)]
-        f, ax = plt.subplots(3, 1)
-        f.set_label("Autocorrelation")
         # TODO: autocorrelation func for red, green, blue channels and plot with 3 subplots (x, y)
-        '''
-        for i in range(3):
-            mas = [reds, greens, blues]
-            for y in list_y:
-                res = []
-                for x in list_x:
-                    res.append([np.corrcoef((mas[i])[0][0][i], (mas[i])[y][x][i])[0][1]])
-                    print(np.corrcoef((mas[i])[0][0][i], (mas[i])[y][x][i])[0][1])
-                    print((mas[i])[y][x][i], (mas[i])[0][0][i])
-                ax[i].plot(list_x, res.copy(), label=f'y={y}')
-            ax[i].set_xlabel('x')
-            ax[i].set_ylabel('r')
-            ax[i].legend()
-        '''
 
-        ax[0].set_title('Red')
-        ax[1].set_title('Green')
-        ax[2].set_title('Blue')
-        plt.show()
+        Y_components = np.zeros((img_height, img_width, 1), dtype=np.int32)
+        Cb_components = np.zeros((img_height, img_width, 1), dtype=np.int32)
+        Cr_componets = np.zeros((img_height, img_width, 1), dtype=np.int32)
+
+        for h in range(img_height):
+            for w in range(img_width):
+                Y_components[h][w] = 0.299 * reds[h][w][0] + 0.587 * greens[h][w][1] + 0.114 * blues[h][w][2]
+                Cb_components[h][w] = 0.5643 * (blues[h][w][2] - Y_components[h][w]) + 128
+                Cr_componets[h][w] = 0.7152 * (reds[h][w][0] - Y_components[h][w]) + 128
+        data = {'Y': Y_components.ravel(), 'Cb': Cb_components.ravel(), 'Cr': Cr_componets.ravel()}
+        data = pd.DataFrame(data)
+        corr = data.corr()
+        print(f'Корреляция между цветами в файле {img_path} YCbCr равна\n {corr}')
+        # TODO: autocorrelation func for Y, Cb, Cr channels and plot with 3 subplots (x, y)
+
+        save_component(img_path, 'Y', Y_components.ravel())
+        save_component(img_path, 'Cb', Cb_components.ravel())
+        save_component(img_path, 'Cr', Cr_componets.ravel())
 
         def save_img():
             # Сделайт изображение в формате JPG в папке saved_img
@@ -291,6 +288,19 @@ def save_color(input_file: str, color_name: str):
                     o_file.write(bytes([0]))
                     o_file.write(bytes([0]))
                     o_file.write(bytes([val]))
+
+
+def save_component(inputfile: str, component_name: str, component: np.array):
+    with open(inputfile, mode='rb') as i_file:
+        header = i_file.read(54)
+        with open("saved_img" + os.sep + str(inputfile.split(os.sep)[1]).split('.')[0] + "_" + component_name + ".bmp",
+                  mode="wb") as o_file:
+            o_file.write(header)
+            for val in component:
+                val = bytes([val])
+                o_file.write(val)
+                o_file.write(val)
+                o_file.write(val)
 
 
 if __name__ == "__main__":
