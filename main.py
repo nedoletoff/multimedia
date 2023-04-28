@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
 import os
 from struct import unpack
 
@@ -95,83 +94,74 @@ def bmp_img_read_save_hist(dir):
         imgs_path.append(img_path)
     # осуществлять
     for img_path in imgs_path:
-        img = open(img_path, "rb")
-        # Начало информации о файле BMP, прямо прочитайте информацию о размере изображения напрямую
-        img.seek(28)
-        bit_num = unpack("<i", img.read(4))[0]  # Byte номер
-        img.seek(10)
-        # От начала до количества байтов, требуемых данными изображения
-        to_img_data = unpack("<i", img.read(4))[0]
-        img.seek(img.tell() + 4)
-        # Unpack to Decimal
-        img_width = unpack("<i", img.read(4))[0]
-        img_height = unpack("<i", img.read(4))[0]
-        img.seek(50)
-        #
-        color_num = unpack("<i", img.read(4))[0]
-        # 1 цифра каждый пиксель, 4 -бит на пиксель 0,5 байта, 8 -бит пикселя 1 байт, 16 -бит и один пиксель 2 байта
-        # (555+0), 24 -бит пиксель 3 байта (Bgr+Alpha) Читать указатель в общей сложности 54 -бит на цветные диски,
-        # из которых 16,24 изображения не нужно исправлять на цветовом диске
-        img.seek(54)
-        if bit_num <= 8:
-            # 2^n
-            color_table_num = 2 ** int(bit_num)
-            color_table = np.zeros((color_table_num, 3), dtype=np.int32)
-            for i in range(color_table_num):
-                b = unpack("B", img.read(1))[0]
-                g = unpack("B", img.read(1))[0]
-                r = unpack("B", img.read(1))[0]
-                alpha = unpack("B", img.read(1))[0]
-                color_table[i][0] = b
-                color_table[i][1] = g
-                color_table[i][2] = r
-        # Поставить данные в Numpy
-        img.seek(to_img_data)
-        img_np = np.zeros((img_height, img_width, 3), dtype=np.int32)
-        reds = np.zeros((img_height, img_width, 3), dtype=np.int32)
-        greens = np.zeros((img_height, img_width, 3), dtype=np.int32)
-        blues = np.zeros((img_height, img_width, 3), dtype=np.int32)
-        num = 0  # Catter Общее количество байтов читается в
-        # Data -расположение слева направо, снизу наверху
-        x = 0
-        y = 0
-        while y < img_height:
-            while x < img_width:
-                if bit_num <= 8:  # 8 -bit изображение чтение
-                    img_byte = unpack("B", img.read(1))[0]
-                    img_byte = bin(img_byte)
-                    color_index = breakup_byte(img_byte, bit_num)
-                    num += 1
-                    for index in color_index:
-                        if x < img_width:
-                            img_np[img_height - y - 1][x] = color_table[index]
-                            reds[img_height - y - 1][x] = color_table[index]
-                            greens[img_height - y - 1][x] = color_table[index]
-                            blues[img_height - y - 1][x] = color_table[index]
-                            x += 1
-                elif bit_num == 24:  # 24 -bit изображение чтения
-                    num += 3
-                    g = unpack("B", img.read(1))[0]
+        with open(img_path, "rb") as img:
+            # Начало информации о файле BMP, прямо прочитайте информацию о размере изображения напрямую
+            img.seek(28)
+            bit_num = unpack("<i", img.read(4))[0]  # Byte номер
+            img.seek(10)
+            # От начала до количества байтов, требуемых данными изображения
+            to_img_data = unpack("<i", img.read(4))[0]
+            img.seek(img.tell() + 4)
+            # Unpack to Decimal
+            img_width = unpack("<i", img.read(4))[0]
+            img_height = unpack("<i", img.read(4))[0]
+            img.seek(50)
+            color_num = unpack("<i", img.read(4))[0]
+            print(f'{bit_num=}')
+            # 1 цифра каждый пиксель, 4 -бит на пиксель 0,5 байта, 8 -бит пикселя 1 байт, 16 -бит и один пиксель 2 байта
+            # (555+0), 24 -бит пиксель 3 байта (Bgr+Alpha) Читать указатель в общей сложности 54 -бит на цветные диски,
+            # из которых 16,24 изображения не нужно исправлять на цветовом диске
+            if bit_num <= 8:
+                # 2^n
+                color_table_num = 2 ** int(bit_num)
+                color_table = np.zeros((color_table_num, 3), dtype=np.int32)
+                for i in range(color_table_num):
                     b = unpack("B", img.read(1))[0]
+                    g = unpack("B", img.read(1))[0]
                     r = unpack("B", img.read(1))[0]
-                    img_np[img_height - y - 1][x] = [r, b, g]
-                    reds[img_height - y - 1][x] = [r, 0, 0]
-                    greens[img_height - y - 1][x] = [0, g, 0]
-                    blues[img_height - y - 1][x] = [0, 0, b]
-                    x += 1
-                elif bit_num == 16:  # 16 -bit изображение чтение
-                    str1 = bin(unpack("B", img.read(1))[0])
-                    str2 = bin(unpack("B", img.read(1))[0])
-                    bgr_color = breakup_16byte(str1, str2)
-                    img_np[img_height - y - 1][x] = [bgr_color[0], bgr_color[1], bgr_color[2]]
-                    num += 2
-                    x += 1
-            x = 0
-            y += 1
-            while num % 4 != 0:  # Количество каждой строки должно быть множеством 4
-                num += 1
-                img.read(1)
-            num = 0
+                    alpha = unpack("B", img.read(1))[0]
+                    color_table[i][0] = b
+                    color_table[i][1] = g
+                    color_table[i][2] = r
+            # Поставить данные в Numpy
+            img.seek(to_img_data)
+            img_np = np.zeros((img_height, img_width, 3), dtype=np.int32)
+            reds = np.zeros((img_height, img_width, 3), dtype=np.int32)
+            greens = np.zeros((img_height, img_width, 3), dtype=np.int32)
+            blues = np.zeros((img_height, img_width, 3), dtype=np.int32)
+            num = 0  # Catter Общее количество байтов читается в
+            # Data -расположение слева направо, снизу наверху
+            for y in range(img_height):
+                for x in range(img_width):
+                    if bit_num <= 8:  # 8 -bit изображение чтение
+                        img_byte = unpack("B", img.read(1))[0]
+                        img_byte = bin(img_byte)
+                        color_index = breakup_byte(img_byte, bit_num)
+                        num += 1
+                        for index in color_index:
+                            if x < img_width:
+                                img_np[img_height - y - 1][x] = color_table[index]
+                                reds[img_height - y - 1][x] = color_table[index]
+                                greens[img_height - y - 1][x] = color_table[index]
+                                blues[img_height - y - 1][x] = color_table[index]
+                    elif bit_num == 24:  # 24 -bit изображение чтения
+                        num += 3
+                        g = unpack("B", img.read(1))[0]
+                        b = unpack("B", img.read(1))[0]
+                        r = unpack("B", img.read(1))[0]
+                        img_np[img_height - y - 1][x] = [r, b, g]
+                        reds[img_height - y - 1][x] = [r, 0, 0]
+                        greens[img_height - y - 1][x] = [0, g, 0]
+                        blues[img_height - y - 1][x] = [0, 0, b]
+                    elif bit_num == 16:  # 16 -bit изображение чтение
+                        str1 = bin(unpack("B", img.read(1))[0])
+                        str2 = bin(unpack("B", img.read(1))[0])
+                        bgr_color = breakup_16byte(str1, str2)
+                        img_np[img_height - y - 1][x] = [bgr_color[0], bgr_color[1], bgr_color[2]]
+                        num += 2
+                while num % 4 != 0:  # Количество каждой строки должно быть множеством 4
+                    num += 1
+                    img.read(1)
 
         plt.figure("img")
         plt.imshow(img_np)
@@ -184,7 +174,6 @@ def bmp_img_read_save_hist(dir):
         ax2.imshow(greens)
         ax3.imshow(blues)
         plt.show()
-        img.close()
 
         save_color(img_path, 'red')
         save_color(img_path, 'green')
@@ -261,7 +250,7 @@ def bmp_img_read_save_hist(dir):
 
 def negative(input_file: str):
     with open(input_file, mode='rb') as i_file:
-        header = i_file.read(54)
+        header = i_file.read(138)
         res = [255 - val for val in i_file.read()]
         with open(input_file.split('.')[0] + "_neg.bmp", mode="wb") as o_file:
             o_file.write(header)
@@ -270,7 +259,7 @@ def negative(input_file: str):
 
 def save_color(input_file: str, color_name: str):
     with open(input_file, mode='rb') as i_file:
-        header = i_file.read(54)
+        header = i_file.read(138)
         res = [val for val in i_file.read()]
         with open("saved_img" + os.sep + str(input_file.split(os.sep)[1]).split('.')[0] + "_" + color_name + ".bmp",
                   mode="wb") as o_file:
@@ -292,11 +281,11 @@ def save_color(input_file: str, color_name: str):
 
 def save_component(inputfile: str, component_name: str, component: np.array):
     with open(inputfile, mode='rb') as i_file:
-        header = i_file.read(54)
+        header = i_file.read(138)
         with open("saved_img" + os.sep + str(inputfile.split(os.sep)[1]).split('.')[0] + "_" + component_name + ".bmp",
                   mode="wb") as o_file:
             o_file.write(header)
-            for val in component:
+            for i, val in enumerate(component):
                 val = bytes([val])
                 o_file.write(val)
                 o_file.write(val)
