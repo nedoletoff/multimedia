@@ -8,6 +8,11 @@ import java.io.IOException;
 
 
 public class EditorImage {
+    private String string;
+    private String img;
+    private String img_name;
+    private String string1;
+
     // мат.о. m[I(A)]
     public static double mathExp(double[][] color, int width, int height) {
         double res = 0;
@@ -231,6 +236,7 @@ public class EditorImage {
         red = new double[image.getWidth()][image.getHeight()];
         blue = new double[image.getWidth()][image.getHeight()];
         green = new double[image.getWidth()][image.getHeight()];
+        img_name = "Baboon";
     }
 
     //3 задание - изображение в разных цветах
@@ -266,9 +272,9 @@ public class EditorImage {
                 imageBlue.setRGB(i,j,pixBlue.getRGB() );
             }
         }
-        ImageIO.write(imageBlue,"bmp",new File("res/Baboon_Blue.bmp"));
-        ImageIO.write(imageRed,"bmp",new File("res/Baboon_Red.bmp"));
-        ImageIO.write(imageGreen,"bmp",new File("res/Baboon_Green.bmp"));
+        ImageIO.write(imageBlue,"bmp",new File("res/" + img_name + "_Blue.bmp"));
+        ImageIO.write(imageRed,"bmp",new File("res/" + img_name + "_Red.bmp"));
+        ImageIO.write(imageGreen,"bmp",new File("res/" + img_name + "_Green.bmp"));
     }
 
     // 4а задание -  коэф.корреляции
@@ -355,9 +361,9 @@ public class EditorImage {
 
             }
         }
-        ImageIO.write(image_Y,"bmp",new File("res/Baboon_Y.bmp"));
-        ImageIO.write(image_Cb,"bmp",new File("res/Baboon_Cb.bmp"));
-        ImageIO.write(image_Cr,"bmp",new File("res/Baboon_Cr.bmp"));
+        ImageIO.write(image_Y,"bmp",new File("res/" + img_name + "_Y.bmp"));
+        ImageIO.write(image_Cb,"bmp",new File("res/" + img_name + "_Cb.bmp"));
+        ImageIO.write(image_Cr,"bmp",new File("res/" + img_name + "_Cr.bmp"));
     }
 
     // 7 задание - обратное преобразование из Y_Cb_Cr в RGB + расчет psnr
@@ -385,7 +391,7 @@ public class EditorImage {
             }
         }
 
-        ImageIO.write(newImage,"bmp",new File("res/Baboon_After_converting_ex7.bmp"));
+        ImageIO.write(newImage,"bmp",new File("res/" + img_name + "_After_converting_ex7.bmp"));
 
         double psnrRed = PSNR(red,restore_red, image.getWidth(), image.getHeight());
         double psnrBlue = PSNR(blue,restore_blue, image.getWidth(), image.getHeight());
@@ -463,11 +469,11 @@ public class EditorImage {
         }
 
         if (n == 2) {
-            ImageIO.write(newImage1, "bmp", new File("res/Baboon_After_decimation_2_ex_8_10_a.bmp"));
-            ImageIO.write(newImage2, "bmp", new File("res/Baboon_After_decimation_2_ex_8_10_b.bmp"));
+            ImageIO.write(newImage1, "bmp", new File("res/" + img_name + "_After_decimation_2_ex_8_10_a.bmp"));
+            ImageIO.write(newImage2, "bmp", new File("res/" + img_name + "_After_decimation_2_ex_8_10_b.bmp"));
         }else {
-            ImageIO.write(newImage1, "bmp", new File("res/Baboon_After_decimation_4_ex_11_a.bmp"));
-            ImageIO.write(newImage2, "bmp", new File("res/Baboon_After_decimation_4_ex_11_b.bmp"));
+            ImageIO.write(newImage1, "bmp", new File("res/" + img_name + "_After_decimation_4_ex_11_a.bmp"));
+            ImageIO.write(newImage2, "bmp", new File("res/" + img_name + "_After_decimation_4_ex_11_b.bmp"));
         }
 
         double newPsnrRed_a = PSNR(red,new_red_dec_a , image.getWidth(), image.getHeight());
@@ -502,12 +508,12 @@ public class EditorImage {
     }
 
     public void getResEx_12() throws IOException {
-        FileWriter histR = new FileWriter("C:\\Users\\Денис\\Desktop\\HistRed.txt");
-        FileWriter histB = new FileWriter("C:\\Users\\Денис\\Desktop\\HistBlue.txt");
-        FileWriter histG = new FileWriter("C:\\Users\\Денис\\Desktop\\HistGreen.txt");
-        FileWriter histY = new FileWriter("C:\\Users\\Денис\\Desktop\\HistY.txt");
-        FileWriter histCb = new FileWriter("C:\\Users\\Денис\\Desktop\\HistCb.txt");
-        FileWriter histCr = new FileWriter("C:\\Users\\Денис\\Desktop\\HistCr.txt");
+        FileWriter histR = new FileWriter(string1 + "\\HistRed.txt");
+        FileWriter histB = new FileWriter(string1 + "\\HistBlue.txt");
+        FileWriter histG = new FileWriter(string1 + "\\HistGreen.txt");
+        FileWriter histY = new FileWriter(string1 + "\\HistY.txt");
+        FileWriter histCb = new FileWriter(string1 + "\\HistCb.txt");
+        FileWriter histCr = new FileWriter(string1 + "\\HistCr.txt");
         //calc(double[][] color, int width, int height)
 
         int [] ptrR = calc(red, image.getWidth(), image.getHeight());
@@ -575,12 +581,13 @@ public class EditorImage {
 
     // 15 задание - гистограммы DPCM
     public void getResEx_15() throws IOException {
-        FileWriter histR = new FileWriter("C:\\Users\\Денис\\Desktop\\HistRedDPCM.txt");
-        FileWriter histB = new FileWriter("C:\\Users\\Денис\\Desktop\\HistBlueDPCM.txt");
-        FileWriter histG = new FileWriter("C:\\Users\\Денис\\Desktop\\HistGreenDPCM.txt");
-        FileWriter histY = new FileWriter("C:\\Users\\Денис\\Desktop\\HistYDPCM.txt");
-        FileWriter histCb = new FileWriter("C:\\Users\\Денис\\Desktop\\HistCbDPCM.txt");
-        FileWriter histCr = new FileWriter("C:\\Users\\Денис\\Desktop\\HistCrDPCM.txt");
+        string1 = "res";
+        FileWriter histR = new FileWriter(string1 + "\\HistRedDPCM.txt");
+        FileWriter histB = new FileWriter(string1 + "\\HistBlueDPCM.txt");
+        FileWriter histG = new FileWriter(string1 + "\\HistGreenDPCM.txt");
+        FileWriter histY = new FileWriter(string1 + "\\HistYDPCM.txt");
+        FileWriter histCb = new FileWriter(string1 + "\\HistCbDPCM.txt");
+        FileWriter histCr = new FileWriter(string1 + "\\HistCrDPCM.txt");
 
         int i = 1;
         double[][] red_DPCM = DPCM(red, image.getWidth(), image.getHeight(), i);

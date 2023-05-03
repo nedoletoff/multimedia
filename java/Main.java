@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        File file = new File ("res/BaboonRGB.bmp"); // открыли файл
+        File file = new File ("imgs/kodim02.bmp"); // открыли файл
         BufferedImage image = ImageIO.read(file); // считали картинку, можем работать с пикселями
 
         EditorImage editor = new EditorImage(image);
