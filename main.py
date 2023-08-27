@@ -163,7 +163,7 @@ def bmp_img_read_save_hist(dir):
                     num += 1
                     img.read(1)
 
-        plt.figure("img")
+        plt.figure("im")
         plt.imshow(img_np)
         plt.show()
 
