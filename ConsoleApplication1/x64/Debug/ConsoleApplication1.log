@@ -1,0 +1,13 @@
+﻿  ConsoleApplication1.cpp
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(102,75): warning C4244: =: преобразование "double" в "uint8_t", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(105,75): warning C4244: =: преобразование "double" в "uint8_t", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(140,75): warning C4244: =: преобразование "double" в "uint8_t", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(143,75): warning C4244: =: преобразование "double" в "uint8_t", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(372,20): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(392,20): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(724,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(751,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(883,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(980,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\ConsoleApplication1.cpp(1113,20): warning C4018: <: несоответствие типов со знаком и без знака
+  ConsoleApplication1.vcxproj -> D:\Program Files\БЕКАП WINOWS\яндекс.сохранить\бекап2\IT\Семестр 6\Мультимедиа\Лаба1\лаба1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe

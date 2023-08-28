@@ -13,8 +13,10 @@ blue_color = 0
 green_color = 1
 red_color = 2
 
+
 class BMP:
     def __init__(self, img_path) -> None:
+        self.rgb = None
         self.cr = None
         self.cb = None
         self.y = None
@@ -117,6 +119,19 @@ class BMP:
             self.cr = cr.copy()
             return cr.copy()
 
+    def ycbcr_to_rgb(self):
+        y = self.y_img()
+        cb = self.cb_img()
+        cr = self.cr_img()
+        rgb = np.zeros((self.height[0], self.width[0], 3), dtype=np.int32)
+        for i in range(self.height[0]):
+            for j in range(self.width[0]):
+                rgb[i][j][red_color] = y[i][j] + 1.402 * (cr[i][j] - 128)
+                rgb[i][j][green_color] = y[i][j] - 0.714 * (cr[i][j] - 128) - 0.344 * (cb[i][j] - 128)
+                rgb[i][j][blue_color] = y[i][j] + 1.772 * (cb[i][j] - 128)
+        self.rgb = rgb.copy()
+        return rgb
+
 
 def draw_img(img: np.array):
     plt.imshow(img)
@@ -128,17 +143,38 @@ def draw_img2(img: np.array):
     plt.show()
 
 
-def save_img(img: np.array, name: str):  # saves images to saves_img
+def save_img(img: np.array, name: str):
     path = "saved_img"
+    fe = ".bmp"
     if not os.path.exists(path):
         os.mkdir(path)
-    name = path + os.sep + name
+    name = path + os.sep + name + fe
     cv2.imwrite(name, img)
+
+
+def save_img2(img: np.array, name: str):
+    path = "saved_img"
+    fe = ".bmp"
+    if not os.path.exists(path):
+        os.mkdir(path)
+    name = path + os.sep + name + fe
+    img = img.astype(np.uint8)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(img)
+    img.save(name)
+
+
+def decimation1(img: np.array, decimation: int):
+
 
 
 def main():
     bmp = BMP("kodim02.bmp")
     print(bmp)
+    fig, ax = plt.subplots(2)
+    ax[0].imshow(bmp.get_img())
+    ax[1].imshow(bmp.ycbcr_to_rgb())
+    plt.show()
 
 
 if __name__ == '__main__':
